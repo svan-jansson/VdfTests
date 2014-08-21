@@ -1,0 +1,104 @@
+{Unit Test Method}
+Function __Test_cJSONWebClient Global Returns Boolean
+    Handle h hJSON hJSONPost hArgs hKey
+    String s
+    
+    Showln "Testing cJSONWebClient..."
+    
+    //Simple JSON HTTP GET check
+    Get Create U_cJSONWebClient to h
+    Get DownloadJSON of h "http://httpbin.org/get?key=value" to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTP GET check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "args" to hArgs
+    Get Value of hArgs "key" to s
+    If (s <> "value") Begin
+        Showln "Simple JSON HTTP GET check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple JSON HTTPS GET check
+    Get Create U_cJSONWebClient to h
+    Get DownloadJSON of h "https://httpbin.org/get?key=value" to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTPS GET check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "args" to hArgs
+    Get Value of hArgs "key" to s
+    If (s <> "value") Begin
+        Showln "Simple JSON HTTP GET check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple JSON HTTP POST check
+    Get Create U_cJSONWebClient to h
+    Get Create U_cJSONDictionary to hJSONPost
+    Set Value of hJSONPost "key" to "value"
+    Get UploadJSON of h "http://httpbin.org/post" hJSONPost to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTP POST check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "data" to s
+    If (s <> '{"key":"value"}') Begin
+        Showln "Simple JSON HTTP POST check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple JSON HTTPS POST check
+    Get Create U_cJSONWebClient to h
+    Get Create U_cJSONDictionary to hJSONPost
+    Set Value of hJSONPost "key" to "value"
+    Get UploadJSON of h "https://httpbin.org/post" hJSONPost to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTPS POST check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "data" to s
+    If (s <> '{"key":"value"}') Begin
+        Showln "Simple JSON HTTPS POST check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+    
+    //Simple JSON HTTP PUT check
+    Get Create U_cJSONWebClient to h
+    Get Create U_cJSONDictionary to hJSONPost
+    Set Value of hJSONPost "key" to "value"
+    Get PutJSON of h "http://httpbin.org/put" hJSONPost to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTP PUT check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "data" to s
+    If (s <> '{"key":"value"}') Begin
+        Showln "Simple JSON HTTP PUT check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple JSON HTTPS PUT check
+    Get Create U_cJSONWebClient to h
+    Get Create U_cJSONDictionary to hJSONPost
+    Set Value of hJSONPost "key" to "value"
+    Get PutJSON of h "https://httpbin.org/put" hJSONPost to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Simple HTTPS PUT check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "data" to s
+    If (s <> '{"key":"value"}') Begin
+        Showln "Simple JSON HTTPS PUT check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    Showln "Testing cJSONWebClient... OK"
+    Function_Return True
+End_Function

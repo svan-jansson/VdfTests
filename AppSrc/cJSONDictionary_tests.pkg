@@ -1,0 +1,67 @@
+{Unit Test Method}
+Function __Test_cJSONDictionary Global Returns Boolean
+    Handle hLevel1 hLevel2 hLevel3
+    String[] sa
+    Number[] da
+    String sJSON
+    Showln "Testing cJSONDictionary..."
+    
+    //Simple serializing check
+    Get Create U_cJSONDictionary to hLevel1
+    Set Value of hLevel1 "cJSONDictionary" to "level1"
+    Get Serialize of hLevel1 to sJSON
+    If (sJSON <> '{"cJSONDictionary":"level1"}') Begin
+        Showln "Simple serializing check failed"
+        Function_Return False
+    End
+    Send Destroy of hLevel1
+    
+    //Simple nesting check
+    Get Create U_cJSONDictionary to hLevel1
+    Set Value of hLevel1 "cJSONDictionary" to "level1"
+    Get Create U_cJSONDictionary to hLevel2
+    Set Value of hLevel2 "cJSONDictionary" to "level2"
+    Set Value of hLevel1 "NextLevel" to hLevel2
+    Get Create U_cJSONDictionary to hLevel3
+    Set Value of hLevel3 "cJSONDictionary" to "level3"
+    Set Value of hLevel2 "NextLevel" to hLevel3
+    Get Serialize of hLevel1 to sJSON
+    If (sJSON <> '{"cJSONDictionary":"level1","NextLevel":{"cJSONDictionary":"level2","NextLevel":{"cJSONDictionary":"level3"}}}') Begin
+        Showln "Simple nesting check failed"
+        Function_Return False
+    End
+    Send Destroy of hLevel1
+    Send Destroy of hLevel2
+    Send Destroy of hLevel3
+
+    //String array check
+    Move "A" to sa[0]
+    Move "B" to sa[1]
+    Move "C" to sa[2]
+    Get Create U_cJSONDictionary to hLevel1
+    Set Value of hLevel1 "cJSONDictionary" to "level1"
+    Set Value of hLevel1 "StringArray" to sa
+    Get Serialize of hLevel1 to sJSON
+    If (sJSON <> '{"cJSONDictionary":"level1","StringArray":["A","B","C"]}') Begin
+        Showln "String array check failed"
+        Function_Return False
+    End
+    Send Destroy of hLevel1
+
+    //Decimal array check
+    Move 535.44 to da[0]
+    Move 22.3 to da[1]
+    Move 34.234 to da[2]
+    Get Create U_cJSONDictionary to hLevel1
+    Set Value of hLevel1 "cJSONDictionary" to "level1"
+    Set Value of hLevel1 "DecimalArray" to da
+    Get Serialize of hLevel1 to sJSON
+    If (sJSON <> '{"cJSONDictionary":"level1","DecimalArray":[535.44,22.3,34.234]}') Begin
+        Showln "Decimal array check failed"
+        Function_Return False
+    End
+    Send Destroy of hLevel1
+
+    Showln "Testing cJSONDictionary... OK"
+    Function_Return True
+End_Function

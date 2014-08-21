@@ -1,0 +1,165 @@
+Function __ToNumber Global String s Returns Number
+    Integer i
+    
+    Get_Attribute DF_DECIMAL_SEPARATOR to i
+    
+    Move (Replace(".",s, Character(i))) to s
+    Move (Replace(",",s, Character(i))) to s
+    
+    Function_Return s
+End_Function
+
+{Unit Test Method}
+Function __Test_cJSONParser Global Returns Boolean
+    String sJSONObject sJSONArray sJSONComplex sJSONDate sJSONObjectArray
+    Handle hParser hDictionary
+    Variant vRet
+    String sRet
+    Number nRet
+    Variant[] vaRet
+    DateTime dtRet
+    
+    Move '{"A":34.22,"B":"b","C":"c"}' to sJSONObject
+    Move '["A", "B", "C"]' to sJSONArray
+    Move '[{"A":1},{"B":2},{"C":3}]' to sJSONObjectArray
+    Move '{"glossary":{"title":"example glossary","GlossDiv":{"title":"S","GlossList":{"GlossEntry":{"ID":"SGML","SortAs":"SGML","GlossTerm":"Standard Generalized Markup Language","Acronym":"SGML","Abbrev":"ISO 8879:1986","GlossDef":{"para":"A meta-markup language, used to create markup languages such as DocBook.","GlossSeeAlso":["GML","XML"]},"GlossSee":"markup"}}}}}' to sJSONComplex
+    Move '{"date":"\/Date(1362196405309)\/"}' to sJSONDate
+    
+    Showln "Testing cJSONParser..."
+    
+    //Json object parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Send Parse of hParser sJSONObject hDictionary
+    If (FindErr) Begin
+        Showln "Json object parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "C" to sRet
+    If (sRet <> "c") Begin
+        Showln "Json object parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "A" to vRet
+    If (__ToNumber(vRet) <> 34.22) Begin
+        Showln "Json object parse check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+
+    //Json date parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Set pbAutoParseMicrosoftDates of hParser to True
+    Send Parse of hParser sJSONDate hDictionary
+    If (FindErr) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "date" to dtRet
+    If (DateGetYear(dtRet) <> 2013) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    If (DateGetMonth(dtRet) <> 3) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    If (DateGetDay(dtRet) <> 2) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    If (DateGetHour(dtRet) <> 3) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    If (DateGetMinute(dtRet) <> 53) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    If (DateGetSecond(dtRet) <> 25) Begin
+        Showln "Json date parse check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+
+    //Json array parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Send Parse of hParser sJSONArray hDictionary
+    If (FindErr) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "_array" to vaRet
+    If (SizeOfArray(vaRet) <> 3) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    If (vaRet[2] <> "C") Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+
+    //Json object array parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Send Parse of hParser sJSONObjectArray hDictionary
+    If (FindErr) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "_array" to vaRet
+    If (SizeOfArray(vaRet) <> 3) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Get Value of vaRet[1] "B" to vRet
+    If (vRet <> 2) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+
+    //Json complex object parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Send Parse of hParser sJSONComplex hDictionary
+    If (FindErr) Begin
+        Showln "Json complex object parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "glossary" to hDictionary
+    If (hDictionary = 0) Begin
+        Showln "Json complex object parse check failed"
+        Function_Return False
+    End
+    If (not(Is_cJSONDictionary(hDictionary))) Begin
+        Showln "Json complex object parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "GlossDiv" to hDictionary
+    If (hDictionary = 0) Begin
+        Showln "Json complex object parse check failed"
+        Function_Return False
+    End
+    If (not(Is_cJSONDictionary(hDictionary))) Begin
+        Showln "Json complex object parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "title" to sRet
+    If (sRet <> "S") Begin
+        Showln "Json complex object check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+
+    Showln "Testing cJSONParser... OK"
+    Function_Return True
+End_Function

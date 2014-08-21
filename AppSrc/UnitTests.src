@@ -1,0 +1,71 @@
+Use Windows.pkg
+
+Use cApplication.pkg
+
+Object oApplication is a cApplication
+    Set pbPreserveEnvironment to False
+    Set peHelpType to htHtmlHelp
+    Set psAutoOpenWorkspace to ""
+End_Object
+
+Global_Variable Integer[] giaTestMethods
+
+{ "Purpose" = "Replace this path with your own" }
+#Replace MY_ERIKSVEN_PATH ..\..\..\eriksven
+
+Use MY_ERIKSVEN_PATH\cHashTable\cHashTable.pkg
+Use MY_ERIKSVEN_PATH\cRegex\cRegex.pkg
+Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONDictionary.pkg
+Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONParser.pkg
+Use MY_ERIKSVEN_PATH\VdfWebTools\cWebClient.pkg
+Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONWebClient.pkg
+
+Use cHashTable_tests.pkg
+Move (get___Test_cHashTable) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cJSONParser_tests.pkg
+Move (get___Test_cJSONParser) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cJSONDictionary_tests.pkg
+Move (get___Test_cJSONDictionary) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cWebClient_tests.pkg
+Move (get___Test_cWebClient) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cJSONWebClient_tests.pkg
+Move (get___Test_cJSONWebClient) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+// Add more tests...
+
+Procedure RunUnitTests
+    Integer i iMsg
+    Boolean bAllOk bOk
+
+    Move True to bAllOk
+    
+    Showln "Running Unit Tests..."
+    
+    For i from 0 to (SizeOfArray(giaTestMethods)-1)
+        Move giaTestMethods[i] to iMsg
+        
+        Showln ""
+        Get iMsg to bOk
+        
+        If (not(bOk)) Begin
+            Move False to bAllOk    
+        End
+    Loop
+    Showln ""
+    
+    Send Bell
+    
+    If (not(bAllOk)) Begin
+        Send Stop_Box "Some classes did not pass the test" "eriksven.com Unit Tests"
+    End
+    Else Begin
+        Showln "All OK (Closing window in 5 seconds...)"
+        Sleep 5
+    End
+    
+End_Procedure
+Send RunUnitTests

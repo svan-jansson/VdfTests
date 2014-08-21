@@ -1,0 +1,66 @@
+{Unit Test Method}
+Function __Test_cWebClient Global Returns Boolean
+    Handle h
+    String s
+    
+    Showln "Testing cWebClient..."
+    
+    //Simple HTTP GET check
+    Get Create U_cWebClient to h
+    Get DownloadString of h "httpbin.org/get?key=value" to s
+    If (piResponseStatus(h) <> 200 or s = "") Begin
+        Showln "Simple HTTP GET check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple HTTPS GET check
+    Get Create U_cWebClient to h
+    Get DownloadString of h "https://httpbin.org/get?key=value" to s
+    If (piResponseStatus(h) <> 200 or s = "") Begin
+        Showln "Simple HTTPS GET check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple HTTP POST check
+    Get Create U_cWebClient to h
+    Get UploadString of h "httpbin.org/post" "key=value" to s
+    If (piResponseStatus(h) <> 200 or s = "") Begin
+        Showln "Simple HTTP POST check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Simple HTTPS POST check
+    Get Create U_cWebClient to h
+    Get UploadString of h "https://httpbin.org/post" "key=value" to s
+    If (piResponseStatus(h) <> 200 or s = "") Begin
+        Showln "Simple HTTP POST check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Reusability check
+    Get Create U_cWebClient to h
+    Get DownloadString of h "http://httpbin.org/get?key=value" to s
+    Get DownloadString of h "htts://httpbin.org123" to s
+    Get DownloadString of h "https://httpbin.org/get?key=value" to s
+    If (piResponseStatus(h) <> 200 or s = "") Begin
+        Showln "Reusability check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    //Response status check
+    Get Create U_cWebClient to h
+    Get DownloadString of h "http://httpbin.org/status/401" to s
+    If (piResponseStatus(h) <> 401) Begin
+        Showln "Response status check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+
+    Showln "Testing cWebClient... OK"
+    Function_Return True
+End_Function
