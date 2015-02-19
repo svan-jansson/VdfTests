@@ -213,3 +213,16 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.dsk
+AppSrc/config/classlist.xml
+Programs/UnitTests.exe.manifest
+*.exe
+*.dbg
+IdeSrc/Workspace.loc
+*.mtd
+AppSrc/UnitTests.prn
+*.dep
+AppSrc/config/classlist.xml
+*.xml
+*.xml
+AppSrc/config/classlist.xml

@@ -11,7 +11,7 @@ End_Function
 
 {Unit Test Method}
 Function __Test_cJSONParser Global Returns Boolean
-    String sJSONObject sJSONArray sJSONComplex sJSONDate sJSONObjectArray
+    String sJSONObject sJSONArray sJSONComplex sJSONDate sJSONObjectArray sJSONUnicodeToken
     Handle hParser hDictionary
     Variant vRet
     String sRet
@@ -24,6 +24,7 @@ Function __Test_cJSONParser Global Returns Boolean
     Move '[{"A":1},{"B":2},{"C":3}]' to sJSONObjectArray
     Move '{"glossary":{"title":"example glossary","GlossDiv":{"title":"S","GlossList":{"GlossEntry":{"ID":"SGML","SortAs":"SGML","GlossTerm":"Standard Generalized Markup Language","Acronym":"SGML","Abbrev":"ISO 8879:1986","GlossDef":{"para":"A meta-markup language, used to create markup languages such as DocBook.","GlossSeeAlso":["GML","XML"]},"GlossSee":"markup"}}}}}' to sJSONComplex
     Move '{"date":"\/Date(1362196405309)\/"}' to sJSONDate
+    Move '{"unicode":"R\u00E5gbr\u00F6d\u0020AB\u0020\u00A9\u00202015"}' to sJSONUnicodeToken
     
     Showln "Testing cJSONParser..."
     
@@ -155,6 +156,39 @@ Function __Test_cJSONParser Global Returns Boolean
     Get Value of hDictionary "title" to sRet
     If (sRet <> "S") Begin
         Showln "Json complex object check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+    
+    //Json unicode string parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Send Parse of hParser sJSONUnicodeToken hDictionary
+    If (FindErr) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "unicode" to sRet
+    If (sRet <> "R†gbr”d AB ¸ 2015") Begin
+        Showln "Unicode string parse check failed"
+        Function_Return False
+    End
+    Send Destroy of hParser
+    Send Destroy of hDictionary
+    
+    //Json disabled unicode string parse check
+    Get Create U_cJSONParser to hParser
+    Get Create U_cJSONDictionary to hDictionary
+    Set pbAutoParseUnicodeTokens of hParser to False
+    Send Parse of hParser sJSONUnicodeToken hDictionary
+    If (FindErr) Begin
+        Showln "Json array parse check failed"
+        Function_Return False
+    End
+    Get Value of hDictionary "unicode" to sRet
+    If (sRet <> "R\u00E5gbr\u00F6d\u0020AB\u0020\u00A9\u00202015") Begin
+        Showln "Disabled unicode string parse check failed"
         Function_Return False
     End
     Send Destroy of hParser
