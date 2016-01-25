@@ -2,6 +2,7 @@
 Function __Test_cJSONWebClient Global Returns Boolean
     Handle h hJSON hJSONPost hArgs hKey
     String s
+    Variant[] va
     
     Showln "Testing cJSONWebClient..."
     
@@ -95,6 +96,20 @@ Function __Test_cJSONWebClient Global Returns Boolean
     Get Value of hJSON "data" to s
     If (s <> '{"key":"value"}') Begin
         Showln "Simple JSON HTTPS PUT check failed"
+        Function_Return False
+    End
+    Send Destroy of h
+    
+    //Array JSON HTTP GET check
+    Get Create U_cJSONWebClient to h
+    Get DownloadJSON of h "http://jsonplaceholder.typicode.com/users" to hJSON
+    If (piResponseStatus(h) <> 200) Begin
+        Showln "Array JSON HTTP GET check failed"
+        Function_Return False
+    End
+    Get Value of hJSON "_array" to va
+    If (SizeOfArray(va) <> 10) Begin
+        Showln "Array JSON HTTP GET check failed"
         Function_Return False
     End
     Send Destroy of h

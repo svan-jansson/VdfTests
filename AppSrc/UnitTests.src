@@ -14,15 +14,19 @@ Global_Variable Integer[] giaTestMethods
 #Replace MY_ERIKSVEN_PATH ..\..\..\eriksven
 
 Use MY_ERIKSVEN_PATH\cHashTable\cHashTable.pkg
-Use MY_ERIKSVEN_PATH\cDictionary\cDictionary.pkg
+Use MY_ERIKSVEN_PATH\cDictionary\cScriptingDictionary.pkg
 Use MY_ERIKSVEN_PATH\cRegex\cRegex.pkg
 Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONDictionary.pkg
 Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONParser.pkg
 Use MY_ERIKSVEN_PATH\VdfWebTools\cWebClient.pkg
 Use MY_ERIKSVEN_PATH\VdfWebTools\cJSONWebClient.pkg
+Use MY_ERIKSVEN_PATH\cHashTable\cSummaryTable.pkg
 
 Use cHashTable_tests.pkg
 Move (get___Test_cHashTable) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cScriptingDictionary_tests.pkg
+Move (get___Test_cScriptingDictionary) to giaTestMethods[SizeOfArray(giaTestMethods)]
 
 Use cJSONParser_tests.pkg
 Move (get___Test_cJSONParser) to giaTestMethods[SizeOfArray(giaTestMethods)]
@@ -35,6 +39,9 @@ Move (get___Test_cWebClient) to giaTestMethods[SizeOfArray(giaTestMethods)]
 
 Use cJSONWebClient_tests.pkg
 Move (get___Test_cJSONWebClient) to giaTestMethods[SizeOfArray(giaTestMethods)]
+
+Use cSummaryTable_tests.pkg
+Move (get___Test_cSummaryTable) to giaTestMethods[SizeOfArray(giaTestMethods)]
 
 // Add more tests...
 

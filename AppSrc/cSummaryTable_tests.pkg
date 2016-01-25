@@ -1,0 +1,91 @@
+{Unit Test Method}
+Function __Test_cSummaryTable Global Returns Boolean
+    Handle h
+    Integer i iTests
+    Number n nSum
+    String[] sa
+    
+    Showln "Testing cSummaryTable..."
+
+    Get Create U_cSummaryTable to h
+    If (h <= 0) Begin
+        Showln "Could not create instance"
+        Function_Return False
+    End
+    
+    // Simple addition test
+    Send Add of h "n" 3.14
+    Send Add of h "n" 2.87
+    Get Value of h "n" to n
+    If (n <> (3.14 + 2.87)) Begin
+        Showln "Simple addition test failed"
+        Function_Return False
+    End
+    Send Destroy of h
+    
+    // Heavy addition test
+    Get Create U_cSummaryTable to h
+    For i from 1 to (10*1000)
+        Send Add of h (String(i)) (Number(i) + 0.99)
+    Loop
+    Get Keys of h to sa
+    If (SizeOfArray(sa) <> (10*1000)) Begin
+        Showln "Heavy addition test failed"
+        Function_Return False
+    End
+    
+    // Key test
+    Move 0 to nSum
+    For i from 1 to (10*1000)
+        Get Value of h sa[i-1] to n
+        Add n to nSum
+    Loop
+    If (nSum <> 50014900) Begin
+        Showln "Key test failed"
+        Function_Return False
+    End
+    Send Destroy of h
+    
+    // Blank key test
+    Get Create U_cSummaryTable to h
+    Send Add of h "" 3.14
+    Send Add of h "   " 2.87
+    Get Value of h "" to n
+    If (n <> (3.14 + 2.87)) Begin
+        Showln "Simple addition test failed"
+        Function_Return False
+    End
+    Get Value of h "   " to n
+    If (n <> (3.14 + 2.87)) Begin
+        Showln "Simple addition test failed"
+        Function_Return False
+    End
+    Send Destroy of h
+    
+    // Key sorting test
+    Get Create U_cSummaryTable to h
+    Send Add of h "A" 10
+    Send Add of h "B" 20
+    Send Add of h "C" 30
+    Send Add of h "D" 40
+    
+    Get Keys of h to sa
+    Send SortKeysBySum of h (&sa) True
+    
+    If (sa[0] <> "D" or sa[1] <> "C" or sa[2] <> "B" or sa[3] <> "A") Begin
+        Showln "Key sorting test failed"
+        Function_Return False
+    End
+    
+    Send SortKeysBySum of h (&sa) False
+    If (sa[0] <> "A" or sa[1] <> "B" or sa[2] <> "C" or sa[3] <> "D") Begin
+        Showln "Key sorting test failed"
+        Function_Return False
+    End
+    
+    Send Destroy of h
+    
+    Showln "Testing cSummaryTable... OK"
+    Function_Return True
+    
+End_Function

@@ -1,0 +1,77 @@
+Struct __Test_cScriptingDictionary_Struct
+    String StringMember
+    Integer IntegerMember
+    String[] ArrayMember
+End_Struct
+
+{Unit Test Method}
+Function __Test_cScriptingDictionary Global Returns Boolean
+    Handle h
+    String sPut sRet
+    String[] saPut saRet
+    __Test_cScriptingDictionary_Struct tPut tRet
+    __Test_cScriptingDictionary_Struct[] taPut taRet
+    Integer iTests
+    Variant[] vaKeys
+    
+    Showln "Testing cScriptingDictionary..."
+    
+    Get Create U_cScriptingDictionary to h
+    If (h <= 0) Begin
+        Showln "Could not create instance"
+        Function_Return False
+    End
+    
+    //Simple data type check
+    Move "cScriptingDictionary" to sPut
+    Set Value of h "test1" to sPut
+    Get Value of h "test1" to sRet
+    If (sPut <> sRet) Begin
+        Showln "Simple data type check failed"
+        Function_Return False
+    End
+    Increment iTests
+    
+    //Data length check
+    Move (Repeat("cScriptingDictionary", 1000)) to sPut
+    Set Value of h "test2" to sPut
+    Get Value of h "test2" to sRet
+    If (length(sPut) <> length(sRet)) Begin
+        Showln "Data length check failed"
+        Function_Return False
+    End
+    Increment iTests
+    
+    //Array data type check
+    Move "A" to saPut[0]
+    Move "B" to saPut[1]
+    Move "C" to saPut[2]
+    Set Value of h "test3" to saPut
+    Get Value of h "test3" to saRet
+    If (SizeOfArray(saPut) <> SizeOfArray(saRet)) Begin
+        Showln "Array data type check failed"
+        Function_Return False
+    End
+    If (saPut[2] <> saRet[2]) Begin
+        Showln "Array data type check failed"
+        Function_Return False
+    End
+    Increment iTests
+
+    //Get keys check
+    Get Keys of h to vaKeys
+    If (SizeOfArray(vaKeys) <> iTests) Begin
+        Showln "Get keys check failed"
+        Function_Return False
+    End
+    If (vaKeys[iTests-1] <> ("test" + String(iTests))) Begin
+        Showln "Get keys check failed"
+        Function_Return False
+    End
+    
+    Send Destroy of h
+    
+    Showln "Testing cScriptingDictionary... OK"
+    Function_Return True
+    
+End_Function
