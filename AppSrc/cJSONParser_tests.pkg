@@ -24,7 +24,7 @@ Function __Test_cJSONParser Global Returns Boolean
     Move '[{"A":1},{"B":2},{"C":3}]' to sJSONObjectArray
     Move '{"glossary":{"title":"example glossary","GlossDiv":{"title":"S","GlossList":{"GlossEntry":{"ID":"SGML","SortAs":"SGML","GlossTerm":"Standard Generalized Markup Language","Acronym":"SGML","Abbrev":"ISO 8879:1986","GlossDef":{"para":"A meta-markup language, used to create markup languages such as DocBook.","GlossSeeAlso":["GML","XML"]},"GlossSee":"markup"}}}}}' to sJSONComplex
     Move '{"date":"\/Date(1362196405309)\/"}' to sJSONDate
-    Move '{"unicode":"R\u00E5gbr\u00F6d\u0020AB\u0020\u00A9\u00202015"}' to sJSONUnicodeToken
+    Move '{"unicode":"Paul\u0027s"}' to sJSONUnicodeToken
     
     Showln "Testing cJSONParser..."
     
@@ -170,7 +170,7 @@ Function __Test_cJSONParser Global Returns Boolean
         Function_Return False
     End
     Get Value of hDictionary "unicode" to sRet
-    If (sRet <> "R†gbr”d AB ¸ 2015") Begin
+    If (sRet <> "Paul's") Begin
         Showln "Unicode string parse check failed"
         Function_Return False
     End
@@ -187,7 +187,7 @@ Function __Test_cJSONParser Global Returns Boolean
         Function_Return False
     End
     Get Value of hDictionary "unicode" to sRet
-    If (sRet <> "R\u00E5gbr\u00F6d\u0020AB\u0020\u00A9\u00202015") Begin
+    If (sRet <> "Paul\u0027s") Begin
         Showln "Disabled unicode string parse check failed"
         Function_Return False
     End
