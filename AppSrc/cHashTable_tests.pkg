@@ -120,6 +120,17 @@ Function __Test_cHashTable Global Returns Boolean
         Function_Return False
     End
     
+    // Load test
+    Integer i iCheck
+    For i from 1 to (10 * 1000)
+        Set Value of h (String(i)) to i
+    Loop
+    Get Value of h "10000" to iCheck
+    If (iCheck <> (10 * 1000)) Begin
+        Showln "Load test failed"
+        Function_Return False 
+    End
+    
     Send Destroy of h
     
     Showln "Testing cHashTable... OK"
