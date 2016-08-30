@@ -10,6 +10,46 @@ End_Object
 
 Global_Variable Integer[] giaTestMethods
 
+// HELPER FUNCTIONS
+
+// Create a new string array with up to 10 members
+Function CreateStringArray Global String a0 String a1 String a2 String a3 String a4 String a5 String a6 String a7 String a8 String a9 Returns String[]
+    String[] sa
+    Integer i
+    Move num_arguments to i
+    If (i > 0) Move a0 to sa[0]
+    If (i > 1) Move a1 to sa[1]
+    If (i > 2) Move a2 to sa[2]
+    If (i > 3) Move a3 to sa[3]
+    If (i > 4) Move a4 to sa[4]
+    If (i > 5) Move a5 to sa[5]
+    If (i > 6) Move a6 to sa[6]
+    If (i > 7) Move a7 to sa[7]
+    If (i > 8) Move a8 to sa[8]
+    If (i > 9) Move a9 to sa[9]
+    Function_Return sa
+End_Function
+
+// Create a new Handle array with up to 10 members
+Function CreateHandleArray Global Handle a0 Handle a1 Handle a2 Handle a3 Handle a4 Handle a5 Handle a6 Handle a7 Handle a8 Handle a9 Returns Handle[]
+    Handle[] ha
+    Integer i
+    Move num_arguments to i
+    If (i > 0) Move a0 to ha[0]
+    If (i > 1) Move a1 to ha[1]
+    If (i > 2) Move a2 to ha[2]
+    If (i > 3) Move a3 to ha[3]
+    If (i > 4) Move a4 to ha[4]
+    If (i > 5) Move a5 to ha[5]
+    If (i > 6) Move a6 to ha[6]
+    If (i > 7) Move a7 to ha[7]
+    If (i > 8) Move a8 to ha[8]
+    If (i > 9) Move a9 to ha[9]
+    Function_Return ha
+End_Function
+
+// END HELPER FUNCTIONS
+
 { "Purpose" = "Replace this path with your own" }
 #Replace MY_ERIKSVEN_PATH ..\..\..\eriksven
 

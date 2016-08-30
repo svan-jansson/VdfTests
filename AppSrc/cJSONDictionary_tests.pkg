@@ -61,7 +61,84 @@ Function __Test_cJSONDictionary Global Returns Boolean
         Function_Return False
     End
     Send Destroy of hLevel1
+    
+    // Helper functions for typing values
+    Object hJson is a cJSONDictionary
+    End_Object
+    
+    String sHelper
+    Set StringValue of hJson "string" to "my-string-value"
+    Get StringValue of hJson "string" to sHelper
+    If (sHelper <> "my-string-value") Begin
+        Showln "StringValue check failed"
+        Function_Return False
+    End
+    
+    Number nHelper
+    Set NumericValue of hJson "number" to 123.45
+    Get NumericValue of hJson "number" to nHelper
+    If (nHelper <> 123.45) Begin
+        Showln "NumericValue check failed"
+        Function_Return False
+    End
+    
+    Boolean bHelper
+    Set BooleanValue of hJson "boolean" to True
+    Get BooleanValue of hJson "boolean" to bHelper
+    If (bHelper <> True) Begin
+        Showln "BooleanValue check failed"
+        Function_Return False
+    End
+    
+    String[] saHelper
+    Set ArrayValue of hJson "array" to (CreateStringArray("A", "B", "C"))
+    Get ArrayValue of hJson "array" to saHelper
+    If (saHelper[2] <> "C") Begin
+        Showln "ArrayValue check failed"
+        Function_Return False
+    End
+    
+    Handle hHelper
+    Object oHelperJson is a cJSONDictionary
+        Set Value "member" to "ABC"
+    End_Object
+    Set ObjectValue of hJson "object" to (oHelperJson)
+    Get ObjectValue of hJson "object" to hHelper
+    Get Value of hHelper "member" to sHelper
+    If (sHelper <> "ABC") Begin
+        Showln "ObjectValue check failed"
+        Function_Return False
+    End
 
+    Handle[] haHelper haInput
+    Object hInput1 is a cJSONDictionary
+        Set Value "me" to "input-1"
+    End_Object
+    Object hInput2 is a cJSONDictionary
+        Set Value "me" to "input-2"
+    End_Object
+    Object hInput3 is a cJSONDictionary
+        Set Value "me" to "input-3"
+    End_Object
+    
+    Move (hInput1) to haInput[0]
+    Move (hInput2) to haInput[1]
+    Move (hInput3) to haInput[2]
+    
+    Set ObjectArrayValue of hJson "objectArray" to haInput
+    Get ObjectArrayValue of hJson "objectArray" to haHelper
+    Get Value of haHelper[2] "me" to sHelper
+    If (sHelper <> "input-3") Begin
+        Showln "ObjectArrayValue check failed"
+        Function_Return False
+    End
+    
+    Get Serialize of hJson to sJSON
+    If (sJSON <> '{"string":"my-string-value","number":123.45,"boolean":true,"array":["A","B","C"],"object":{"member":"ABC"},"objectArray":[{"me":"input-1"},{"me":"input-2"},{"me":"input-3"}]}') Begin
+        Showln "Helper Function Serializing check failed"
+        Function_Return False
+    End
+    
     Showln "Testing cJSONDictionary... OK"
     Function_Return True
 End_Function
